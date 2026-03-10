@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   switch (event.type) {
     case 'checkout.session.completed': {
-      const session = event.data.object as Stripe.CheckoutSession
+      const session = event.data.object as Stripe.Checkout.Session
       const userId = session.metadata?.userId
       const plan = session.metadata?.plan
 
@@ -59,3 +59,4 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ received: true })
 }
+
