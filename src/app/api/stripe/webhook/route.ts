@@ -1,5 +1,6 @@
 // @ts-nocheck
 // @ts-nocheck
+// @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase/server'
@@ -61,6 +62,7 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ received: true })
 }
+
 
 
 
