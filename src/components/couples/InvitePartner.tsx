@@ -54,7 +54,7 @@ export function InvitePartner() {
               Connect with your partner
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm">
-              The Couples dashboard is ET AI's #1 feature. Track your health together,
+              The Couples dashboard is ET AI&apos;s #1 feature. Track your health together,
               see your Sync Score, and grow as a unit.
             </p>
           </div>
@@ -63,7 +63,7 @@ export function InvitePartner() {
             <div className="w-full max-w-sm space-y-3">
               <div>
                 <Label htmlFor="partner-email" className="text-left block mb-1">
-                  Partner's email (optional)
+                  Partner&apos;s email (optional)
                 </Label>
                 <Input
                   id="partner-email"
@@ -105,3 +105,4 @@ export function InvitePartner() {
     </Card>
   )
 }
+
