@@ -12,13 +12,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // 1. Catch the exact payload sent by our custom Enroll button
   const body = await request.json()
   const programId = body.programId
 
-  // 2. Pull the exact $12.99 Price ID we just injected into Vercel
   const priceId = process.env.STRIPE_PRO_PRICE_ID
-
   if (!priceId) {
     return NextResponse.json({ error: 'Server configuration missing Stripe Price ID' }, { status: 500 })
   }
@@ -29,21 +26,22 @@ export async function POST(request: NextRequest) {
     .eq('id', user.id)
     .single()
 
+  // BULLETPROOF URL DETECTION (No Vercel variables needed)
+  const origin = request.headers.get('origin') || 'https://etai-one-health.vercel.app'
+
   try {
-    // 3. Generate the secure Stripe Checkout URL
     const session = await stripe.checkout.sessions.create({
       customer: profile?.stripe_customer_id ?? undefined,
       customer_email: profile?.stripe_customer_id ? undefined : (profile?.email ?? user.email),
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/programs?checkout=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/programs`,
+      success_url: `${origin}/programs?checkout=success`,
+      cancel_url: `${origin}/programs`,
       metadata: { userId: user.id, programId: programId || 'pro_upgrade' },
       subscription_data: { metadata: { userId: user.id, programId: programId || 'pro_upgrade' } },
     })
 
-    // 4. Send the URL back to the frontend so it can redirect the user
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error('Stripe error:', error)
