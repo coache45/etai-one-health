@@ -36,7 +36,7 @@ export default function ProgramDetailPage() {
               .eq('user_id', profile.id)
               .eq('program_id', id)
               .eq('status', 'active')
-              .single()
+              .maybeSingle() // FIX: Prevents the 406 error when no enrollment exists
           : Promise.resolve({ data: null }),
       ])
 
@@ -52,6 +52,30 @@ export default function ProgramDetailPage() {
     setEnrolling(true)
     const supabase = createClient()
 
+    // NEW LOGIC: CHECK FOR PRO TIER PAYWALL
+    if (program.tier_required === 'pro') {
+      try {
+        const response = await fetch('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ programId: program.id }),
+        })
+        
+        const { url, error } = await response.json()
+        
+        if (error) throw new Error(error)
+        if (url) {
+          window.location.href = url // Redirect directly to Stripe Checkout
+          return
+        }
+      } catch (err) {
+        toast.error('Failed to initiate secure checkout. Please try again.')
+        setEnrolling(false)
+      }
+      return
+    }
+
+    // ORIGINAL LOGIC: FREE TIER INSTANT ENROLLMENT
     try {
       const { data, error } = await supabase
         .from('user_programs')
@@ -116,7 +140,6 @@ export default function ProgramDetailPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5 animate-fade-in">
-      {/* Back */}
       <Link href="/programs">
         <Button variant="ghost" size="sm" className="gap-1 text-gray-500 -ml-2">
           <ArrowLeft className="w-4 h-4" />
@@ -124,31 +147,27 @@ export default function ProgramDetailPage() {
         </Button>
       </Link>
 
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-[#1B2A4A] dark:text-white">{program.name}</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{program.description}</p>
       </div>
 
-      {/* Progress Timeline */}
       {userProgram && (
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm">
           <ProgramTimeline userProgram={userProgram} />
         </div>
       )}
 
-      {/* Enroll CTA */}
       {!userProgram && (
         <div className="bg-[#1B2A4A] rounded-2xl p-5 text-white">
           <p className="text-lg font-bold mb-1">{program.duration_days} days. One habit at a time.</p>
           <p className="text-sm text-white/70 mb-4">{program.description}</p>
           <Button variant="gold" onClick={enroll} disabled={enrolling} className="w-full">
-            {enrolling ? 'Enrolling...' : `Start ${program.name}`}
+            {enrolling ? 'Processing...' : `Start ${program.name}`}
           </Button>
         </div>
       )}
 
-      {/* Today's Action */}
       {userProgram && todayAction && (
         <div>
           <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">
@@ -163,7 +182,6 @@ export default function ProgramDetailPage() {
         </div>
       )}
 
-      {/* All Actions */}
       <div>
         <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">
           Program Overview
