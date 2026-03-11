@@ -36,7 +36,7 @@ export default function ProgramDetailPage() {
               .eq('user_id', profile.id)
               .eq('program_id', id)
               .eq('status', 'active')
-              .maybeSingle() // FIX: Prevents the 406 error when no enrollment exists
+              .maybeSingle()
           : Promise.resolve({ data: null }),
       ])
 
@@ -50,50 +50,24 @@ export default function ProgramDetailPage() {
   async function enroll() {
     if (!profile?.id || !program) return
     setEnrolling(true)
-    const supabase = createClient()
 
-    // NEW LOGIC: CHECK FOR PRO TIER PAYWALL
-    if (program.tier_required === 'pro') {
-      try {
-        const response = await fetch('/api/stripe/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ programId: program.id }),
-        })
-        
-        const { url, error } = await response.json()
-        
-        if (error) throw new Error(error)
-        if (url) {
-          window.location.href = url // Redirect directly to Stripe Checkout
-          return
-        }
-      } catch (err) {
-        toast.error('Failed to initiate secure checkout. Please try again.')
-        setEnrolling(false)
-      }
-      return
-    }
-
-    // ORIGINAL LOGIC: FREE TIER INSTANT ENROLLMENT
+    // FORCED PAYWALL TEST: Send everyone to Stripe, regardless of free/pro status
     try {
-      const { data, error } = await supabase
-        .from('user_programs')
-        .insert({
-          user_id: profile.id,
-          program_id: program.id,
-          current_day: 1,
-          status: 'active',
-        })
-        .select('*, program:programs(*)')
-        .single()
-
-      if (error) throw error
-      setUserProgram(data as UserProgram & { program: Program })
-      toast.success(`You are enrolled in ${program.name}. Day 1 starts now.`)
-    } catch {
-      toast.error('Could not enroll. Try again.')
-    } finally {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ programId: program.id }),
+      })
+      
+      const { url, error } = await response.json()
+      
+      if (error) throw new Error(error)
+      if (url) {
+        window.location.href = url // Redirect directly to Stripe Checkout
+        return
+      }
+    } catch (err) {
+      toast.error('Failed to initiate secure checkout. Please try again.')
       setEnrolling(false)
     }
   }
