@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { stripe, PLANS, type PlanKey } from '@/lib/stripe'
+import { stripe } from '@/lib/stripe'
 
 export async function POST(request: NextRequest) {
   const supabase = createClient()
@@ -12,15 +12,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { plan, billingPeriod = 'monthly' } = await request.json()
+  // 1. Catch the exact payload sent by our custom Enroll button
+  const body = await request.json()
+  const programId = body.programId
 
-  const planConfig = PLANS[plan as PlanKey]
-  if (!planConfig) {
-    return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
+  // 2. Pull the exact $12.99 Price ID we just injected into Vercel
+  const priceId = process.env.STRIPE_PRO_PRICE_ID
+
+  if (!priceId) {
+    return NextResponse.json({ error: 'Server configuration missing Stripe Price ID' }, { status: 500 })
   }
-
-  const priceId =
-    billingPeriod === 'yearly' ? planConfig.yearlyPriceId : planConfig.monthlyPriceId
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -29,18 +30,20 @@ export async function POST(request: NextRequest) {
     .single()
 
   try {
+    // 3. Generate the secure Stripe Checkout URL
     const session = await stripe.checkout.sessions.create({
       customer: profile?.stripe_customer_id ?? undefined,
       customer_email: profile?.stripe_customer_id ? undefined : (profile?.email ?? user.email),
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings`,
-      metadata: { userId: user.id, plan },
-      subscription_data: { metadata: { userId: user.id, plan } },
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/programs?checkout=success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/programs`,
+      metadata: { userId: user.id, programId: programId || 'pro_upgrade' },
+      subscription_data: { metadata: { userId: user.id, programId: programId || 'pro_upgrade' } },
     })
 
+    // 4. Send the URL back to the frontend so it can redirect the user
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error('Stripe error:', error)
