@@ -103,7 +103,7 @@ export default function SignupPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ernest Owens"
+                placeholder="Enter your full name"
                 required
                 className="mt-1"
               />
