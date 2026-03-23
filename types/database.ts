@@ -41,6 +41,7 @@ export interface Database {
           metadata?: Record<string, unknown>;
           updated_at?: string;
         };
+        Relationships: [];
       };
 
       usm_stress_vectors: {
@@ -81,6 +82,7 @@ export interface Database {
           source_signals?: Record<string, number>;
           confidence?: number;
         };
+        Relationships: [];
       };
 
       usm_harmonic_index: {
@@ -113,6 +115,7 @@ export interface Database {
           recommendation?: string;
           calculated_at?: string;
         };
+        Relationships: [];
       };
 
       usm_temporal_resonance: {
@@ -147,6 +150,7 @@ export interface Database {
           analysis_window_start?: string;
           analysis_window_end?: string;
         };
+        Relationships: [];
       };
 
       guardian_patients: {
@@ -187,6 +191,7 @@ export interface Database {
           baseline_cognitive_score?: number;
           updated_at?: string;
         };
+        Relationships: [];
       };
 
       guardian_cognitive_vectors: {
@@ -233,6 +238,7 @@ export interface Database {
           confidence?: number;
           alert_triggered?: boolean;
         };
+        Relationships: [];
       };
 
       guardian_memory_prompts: {
@@ -267,6 +273,7 @@ export interface Database {
           response_type?: string | null;
           effectiveness_score?: number | null;
         };
+        Relationships: [];
       };
 
       guardian_geofence_events: {
@@ -304,6 +311,7 @@ export interface Database {
           alert_sent?: boolean;
           responder_id?: string | null;
         };
+        Relationships: [];
       };
 
       guardian_care_network: {
@@ -335,6 +343,7 @@ export interface Database {
           is_active?: boolean;
           updated_at?: string;
         };
+        Relationships: [];
       };
 
       guardian_agent_conversations: {
@@ -369,7 +378,20 @@ export interface Database {
           anomaly_flags?: Record<string, unknown> | null;
           session_id?: string;
         };
+        Relationships: [];
       };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }
