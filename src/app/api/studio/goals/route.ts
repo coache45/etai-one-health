@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { fetchUserGoals, insertGoal, fetchMilestones } from '@/lib/studio/queries'
-import type { GoalCategory } from '@/types/studio'
+import { fetchActivePartnership, getPartnerId } from '@/lib/partnerships/queries'
+import { createAdminClient } from '@/lib/supabase/admin'
+import type { GoalCategory, UserGoal } from '@/types/studio'
 
 const VALID_CATEGORIES = ['business', 'relationships', 'health', 'finance', 'creativity', 'learning']
 
@@ -30,7 +32,42 @@ export async function GET(request: NextRequest) {
       })
     )
 
-    return NextResponse.json({ goals: goalsWithMilestones })
+    // If include_shared=true, also fetch partner's shared goals
+    let sharedGoals: UserGoal[] = []
+    const includeShared = searchParams.get('include_shared') === 'true'
+
+    if (includeShared) {
+      try {
+        const partnership = await fetchActivePartnership(user.id)
+        if (partnership && partnership.status === 'active') {
+          const partnerId = getPartnerId(partnership, user.id)
+          if (partnerId) {
+            // Fetch goals shared with this user
+            const adminClient = createAdminClient()
+            const { data: shared } = await adminClient
+              .from('user_goals')
+              .select('*')
+              .eq('shared_with', user.id)
+              .eq('status', status ?? 'active')
+              .order('created_at', { ascending: false })
+
+            if (shared) {
+              const sharedWithMilestones = await Promise.all(
+                (shared as unknown as UserGoal[]).map(async (goal) => {
+                  const milestones = await fetchMilestones(goal.id)
+                  return { ...goal, milestones }
+                })
+              )
+              sharedGoals = sharedWithMilestones
+            }
+          }
+        }
+      } catch {
+        // Partner goals are optional — don't fail the request
+      }
+    }
+
+    return NextResponse.json({ goals: goalsWithMilestones, shared_goals: sharedGoals })
   } catch (err) {
     console.error('Goals GET error:', err)
     return NextResponse.json({ error: 'Failed to fetch goals' }, { status: 500 })
