@@ -15,6 +15,7 @@ import {
   Settings,
   Zap,
   Shield,
+  FileText,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUserStore } from '@/stores/user-store'
@@ -29,6 +30,7 @@ const navItems = [
   { href: '/programs', label: 'Programs', icon: BookOpen },
   { href: '/insights', label: 'Insights', icon: BarChart3 },
   { href: '/guardian', label: 'Guardian', icon: Shield },
+  { href: '/guides', label: 'Guides', icon: FileText },
 ]
 
 const bottomItems = [

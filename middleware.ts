@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const publicPaths = ['/', '/login', '/signup', '/onboarding', '/auth/callback']
+const publicPaths = ['/', '/login', '/signup', '/onboarding', '/auth/callback', '/guides']
 const enterprisePaths = ['/admin', '/teams', '/analytics', '/challenges']
 
 export async function middleware(request: NextRequest) {
@@ -10,8 +10,8 @@ export async function middleware(request: NextRequest) {
 
   // Allow public paths without auth
   const isPublic = publicPaths.some(
-    (p) => pathname === p || pathname.startsWith('/auth/')
-  )
+    (p) => pathname === p || pathname.startsWith(p + '/')
+  ) || pathname.startsWith('/auth/')
 
   if (!user && !isPublic) {
     const loginUrl = request.nextUrl.clone()
