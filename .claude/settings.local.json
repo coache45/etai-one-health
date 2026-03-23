@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --use-npm --yes)",
+      "Bash(npx create-next-app@latest one-health-temp --typescript --tailwind --app --use-npm --yes)",
+      "Bash(cp CLAUDE.md CLAUDE.md.bak)",
+      "Bash(cp one-health-temp/.gitignore .)",
+      "Bash(cp one-health-temp/eslint.config.mjs .)",
+      "Bash(cp one-health-temp/next-env.d.ts .)",
+      "Bash(cp one-health-temp/next.config.ts .)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx vitest:*)",
+      "Bash(gh repo:*)",
+      "Bash(where gh:*)",
+      "Bash(where git:*)",
+      "Bash(git --version)",
+      "Bash(where vercel:*)",
+      "Bash(npx vercel:*)"
+    ]
+  }
+}
