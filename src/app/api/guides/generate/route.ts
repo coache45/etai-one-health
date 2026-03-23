@@ -5,22 +5,23 @@ import type { GuideCategory, GuideDifficulty, GuideChapter } from '@/types/guide
 
 const GenerateSchema = z.object({
   topic: z.string().min(3).max(200),
-  category: z.enum(['general', 'sleep', 'stress', 'nutrition', 'movement', 'cognition', 'guardian', 'couples']).optional().default('general'),
+  category: z.enum(['general', 'sleep', 'stress', 'nutrition', 'movement', 'cognition', 'guardian', 'couples', 'ai_basics', 'health', 'business', 'relationships', 'tools', 'manufacturing']).optional().default('general'),
   difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional().default('beginner'),
   publish: z.boolean().optional().default(false),
 })
 
-const SYSTEM_PROMPT = `You are an expert health educator writing for ET AI ONE Health.
-Your job is to create warm, accessible ELI5 ("Explain Like I'm 5") health guides.
+const SYSTEM_PROMPT = `You are an expert educator writing for ET AI ONE Health — a platform that brings AI down to earth for everyday people.
+Your job is to create warm, accessible ELI5 ("Explain Like I'm 5") guides on any topic: AI, health, business, relationships, tools, or manufacturing.
 
 STYLE RULES:
-- Write like you're explaining to a smart friend, not a medical textbook
-- Use everyday analogies (kitchens, cars, phone batteries, gardens)
+- Write like you're explaining to a smart friend, not a textbook
+- Use everyday analogies (kitchens, cars, phone batteries, gardens, LEGO bricks)
 - Short paragraphs (2-3 sentences max)
-- No medical jargon without immediately explaining it
+- No jargon without immediately explaining it in plain English
 - Warm, encouraging tone — never condescending
 - Include actionable steps people can do TODAY
 - Each chapter should have exactly one core idea
+- Pass the Grandmother Test: would your grandmother understand this?
 
 OUTPUT FORMAT: Return valid JSON matching this exact structure:
 {
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'user',
-            content: `Create an ELI5 health guide about: "${topic}"\n\nCategory: ${category}\nDifficulty level: ${difficulty}\n\nRemember: warm, accessible, actionable. Return only the JSON.`,
+            content: `Create an ELI5 guide about: "${topic}"\n\nCategory: ${category}\nDifficulty level: ${difficulty}\n\nRemember: warm, accessible, actionable. Pass the Grandmother Test. Return only the JSON.`,
           },
         ],
       }),

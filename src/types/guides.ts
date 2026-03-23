@@ -13,6 +13,12 @@ export type GuideCategory =
   | 'cognition'
   | 'guardian'
   | 'couples'
+  | 'ai_basics'
+  | 'health'
+  | 'business'
+  | 'relationships'
+  | 'tools'
+  | 'manufacturing'
 
 export interface GuideStep {
   title: string
@@ -60,6 +66,12 @@ export const CATEGORY_CONFIG: Record<GuideCategory, { label: string; emoji: stri
   cognition: { label: 'Cognition', emoji: '🧠' },
   guardian: { label: 'Guardian', emoji: '🛡️' },
   couples: { label: 'Couples', emoji: '💕' },
+  ai_basics: { label: 'AI Basics', emoji: '🤖' },
+  health: { label: 'Health', emoji: '❤️' },
+  business: { label: 'Business', emoji: '💼' },
+  relationships: { label: 'Relationships', emoji: '💞' },
+  tools: { label: 'Tools', emoji: '🛠️' },
+  manufacturing: { label: 'Manufacturing', emoji: '🏭' },
 }
 
 // Step card border colors cycle through these
