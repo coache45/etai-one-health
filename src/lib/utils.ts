@@ -64,3 +64,8 @@ export function getLastNDays(n: number): string[] {
   }
   return dates
 }
+
+/** Clamp a number to the 0.0-1.0 unit interval (USM/CPR dimensions). */
+export function clampToUnit(value: number): number {
+  return Math.max(0, Math.min(1, value))
+}
