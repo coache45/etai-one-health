@@ -30,7 +30,7 @@ const navItems = [
   { href: '/programs', label: 'Programs', icon: BookOpen },
   { href: '/insights', label: 'Insights', icon: BarChart3 },
   { href: '/guardian', label: 'Guardian', icon: Shield },
-  { href: '/guides', label: 'Guides', icon: FileText },
+  { href: '/guide-admin', label: 'Guides', icon: FileText },
 ]
 
 const bottomItems = [
