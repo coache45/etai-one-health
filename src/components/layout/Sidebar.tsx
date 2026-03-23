@@ -17,6 +17,9 @@ import {
   Shield,
   FileText,
   Globe,
+  Sparkles,
+  Target,
+  Package,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUserStore } from '@/stores/user-store'
@@ -33,6 +36,9 @@ const navItems = [
   { href: '/guardian', label: 'Guardian', icon: Shield },
   { href: '/guide-admin', label: 'Guides', icon: FileText },
   { href: '/community', label: 'Earth Station', icon: Globe },
+  { href: '/studio', label: 'AI Studio', icon: Sparkles },
+  { href: '/goals', label: 'Goals', icon: Target },
+  { href: '/packs', label: 'Prompt Packs', icon: Package },
 ]
 
 const bottomItems = [
@@ -76,7 +82,7 @@ export function Sidebar() {
             >
               <Icon className="w-5 h-5 shrink-0" />
               {label}
-              {(label === 'Guardian' || label === 'Earth Station') && (
+              {(label === 'Guardian' || label === 'Earth Station' || label === 'AI Studio') && (
                 <span className="ml-auto text-xs bg-[#F5C842] text-[#1B2A4A] px-1.5 py-0.5 rounded-full font-bold">
                   NEW
                 </span>
