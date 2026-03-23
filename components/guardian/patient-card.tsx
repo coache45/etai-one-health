@@ -25,8 +25,8 @@ export function PatientCard({ patient, currentCPR }: PatientCardProps) {
           <h3 className="font-semibold text-foreground">
             Patient {patient.id.slice(0, 8)}
           </h3>
-          <p className="text-sm text-text-muted">{patient.diagnosis}</p>
-          <p className="text-xs text-text-muted">Stage: {patient.stage}</p>
+          <p className="text-sm text-text-muted">{patient.diagnosis_type}</p>
+          <p className="text-xs text-text-muted">Stage: {patient.diagnosis_stage}</p>
         </div>
         {tier && (
           <span

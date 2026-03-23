@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod/v4';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { getAlertTier } from '@/types/guardian';
 
 const TIMERANGE_MS: Record<string, number> = {
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { patient_id, limit, timerange } = parsed.data;
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Calculate time window
     const windowMs = TIMERANGE_MS[timerange] ?? 24 * 60 * 60 * 1000;
@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
       .from('guardian_cognitive_vectors')
       .select('*')
       .eq('patient_id', patient_id)
-      .gte('timestamp', since)
-      .order('timestamp', { ascending: false })
+      .gte('recorded_at', since)
+      .order('recorded_at', { ascending: false })
       .limit(limit);
 
     if (queryError) {
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     }
 
     const latest = vectors[0]!;
-    const latestScore = latest.cpr_composite_score;
+    const latestScore = latest.cpr_score;
     const alertTier = getAlertTier(latestScore);
 
     // Calculate trend: compare latest to average of remaining readings
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     if (vectors.length < 2) {
       trend = 'insufficient_data';
     } else {
-      const previousScores = vectors.slice(1).map((v) => v.cpr_composite_score);
+      const previousScores = vectors.slice(1).map((v) => v.cpr_score);
       const avgPrevious =
         previousScores.reduce((sum, s) => sum + s, 0) / previousScores.length;
       const delta = latestScore - avgPrevious;
@@ -95,8 +95,8 @@ export async function GET(request: NextRequest) {
       patient_id,
       latest: {
         id: latest.id,
-        timestamp: latest.timestamp,
-        cpr_composite_score: latestScore,
+        recorded_at: latest.recorded_at,
+        cpr_score: latestScore,
         cognitive_load_index: latest.cognitive_load_index,
         circadian_disruption: latest.circadian_disruption,
         movement_entropy: latest.movement_entropy,
@@ -104,11 +104,12 @@ export async function GET(request: NextRequest) {
         identity_coherence: latest.identity_coherence,
         confidence: latest.confidence,
         alert_triggered: latest.alert_triggered,
+        alert_level: latest.alert_level,
       },
       history: vectors.map((v) => ({
         id: v.id,
-        timestamp: v.timestamp,
-        cpr_composite_score: v.cpr_composite_score,
+        recorded_at: v.recorded_at,
+        cpr_score: v.cpr_score,
         alert_triggered: v.alert_triggered,
       })),
       trend,

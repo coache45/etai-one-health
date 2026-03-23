@@ -21,13 +21,14 @@ export type AlertTier = 'info' | 'caution' | 'warning' | 'critical' | 'emergency
 
 export interface CognitiveVector {
   patient_id: string;
-  timestamp: string;
+  entity_id: string;
+  recorded_at: string;
   cognitive_load_index: number;    // 0.0 - 1.0
   circadian_disruption: number;    // 0.0 - 1.0
   movement_entropy: number;        // 0.0 - 1.0
   speech_degradation: number;      // 0.0 - 1.0
   identity_coherence: number;      // 0.0 - 1.0
-  cpr_composite_score: number;     // 0.0 - 1.0 (weighted composite)
+  cpr_score: number;               // 0.0 - 1.0 (weighted composite)
   source_signals: Record<string, number>;
   confidence: number;
 }
@@ -35,24 +36,22 @@ export interface CognitiveVector {
 export interface GuardianPatient {
   id: string;
   entity_id: string;
-  diagnosis: string;
-  diagnosis_date: string;
-  stage: string;
+  diagnosis_type: string | null;
+  diagnosis_date: string | null;
+  diagnosis_stage: string | null;
   primary_caregiver_id: string | null;
-  emergency_contact: string;
-  medications: Record<string, unknown>[];
-  baseline_cognitive_score: number;
+  emergency_contact_phone: string | null;
+  baseline_cognitive_load: number | null;
 }
 
 export interface MemoryPrompt {
   id: string;
   patient_id: string;
   prompt_type: string;
-  content: string;
-  scheduled_at: string;
-  delivered_at: string | null;
-  response_type: string | null;
+  prompt_text: string;
+  prompt_priority: number;
   effectiveness_score: number | null;
+  is_active: boolean;
 }
 
 export interface GeofenceEvent {
@@ -60,27 +59,30 @@ export interface GeofenceEvent {
   event_type: 'entered' | 'exited' | 'wandering';
   latitude: number;
   longitude: number;
-  geofence_id: string;
-  timestamp: string;
+  geofence_zone_id: string | null;
+  recorded_at: string;
   alert_sent: boolean;
 }
 
 export interface CareNetworkMember {
   patient_id: string;
-  member_id: string;
+  contact_user_id: string | null;
+  contact_name: string;
+  contact_phone: string | null;
+  contact_email: string | null;
   role: 'caregiver' | 'poa' | 'medical' | 'emergency';
   permissions: Record<string, boolean>;
+  receives_alerts: boolean;
   is_active: boolean;
 }
 
 export interface AgentConversation {
   patient_id: string;
-  agent_type: string;
-  message_role: 'assistant' | 'user' | 'system';
-  content: string;
-  sentiment_score: number | null;
-  anomaly_flags: Record<string, unknown> | null;
   session_id: string;
+  role: 'assistant' | 'user' | 'system';
+  message_text: string;
+  message_type: string;
+  patient_sentiment: string | null;
 }
 
 // CPR score weights (from CLAUDE.md spec)

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod/v4';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { calculateCPRScore } from '@/lib/stress/guardian-cpr';
 import { getAlertTier } from '@/types/guardian';
 import { clampToUnit } from '@/lib/utils';
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = parsed.data;
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Look up patient to get entity_id and verify existence
     const { data: patient, error: patientError } = await supabase
@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
         failure_probability: failureProbability,
         recovery_coefficient: recoveryCoefficient,
         source_signals: data.source_signals,
+        signal_source: data.device_type,
         confidence: data.confidence,
       });
 
@@ -87,18 +88,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into guardian_cognitive_vectors (Guardian-specific layer)
+    const alertTier = getAlertTier(cprScore);
     const { data: cogVector, error: cogError } = await supabase
       .from('guardian_cognitive_vectors')
       .insert({
         patient_id: data.patient_id,
+        entity_id: patient.entity_id,
         cognitive_load_index: data.cognitive_load_index,
         circadian_disruption: data.circadian_disruption,
         movement_entropy: data.movement_entropy,
         speech_degradation: data.speech_degradation,
         identity_coherence: data.identity_coherence,
-        cpr_composite_score: cprScore,
+        cpr_score: cprScore,
         source_signals: data.source_signals,
         confidence: data.confidence,
+        alert_level: alertTier,
       })
       .select('*')
       .single();
@@ -110,15 +114,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const alertTier = getAlertTier(cprScore);
-
     return NextResponse.json({
       id: cogVector.id,
       patient_id: data.patient_id,
-      cpr_composite_score: cprScore,
+      cpr_score: cprScore,
       alert_tier: alertTier,
       alert_triggered: cogVector.alert_triggered,
-      timestamp: cogVector.timestamp,
+      recorded_at: cogVector.recorded_at,
       usm_mapping: {
         stress_index_acute: stressAcute,
         stress_index_chronic: stressChronic,
