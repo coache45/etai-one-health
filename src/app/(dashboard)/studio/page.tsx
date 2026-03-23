@@ -6,6 +6,8 @@ import { CategorySelector } from '@/components/studio/category-selector'
 import { PackCard } from '@/components/studio/pack-card'
 import { PromptWorkspace } from '@/components/studio/prompt-workspace'
 import { SessionHistory } from '@/components/studio/session-history'
+import { PartnerPresence } from '@/components/partnerships/partner-presence'
+import { SharedSession } from '@/components/partnerships/shared-session'
 import type { PromptPack, GoalCategory } from '@/types/studio'
 
 export default function StudioPage() {
@@ -54,12 +56,13 @@ export default function StudioPage() {
               <div className="w-10 h-10 rounded-xl bg-[#1B2A4A] flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-[#C9A84C]" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h1 className="text-2xl font-bold text-[#1B2A4A]">AI Studio</h1>
                 <p className="text-sm text-slate-500">
                   Let&apos;s make something together. Pick a category to start.
                 </p>
               </div>
+              <PartnerPresence />
             </div>
           </div>
 
@@ -124,10 +127,11 @@ export default function StudioPage() {
         </div>
 
         {/* Session history sidebar (desktop only) */}
-        <aside className="hidden xl:block w-72 border-l border-slate-200 bg-white p-4 min-h-screen">
+        <aside className="hidden xl:block w-72 border-l border-slate-200 bg-white p-4 min-h-screen space-y-6">
           <SessionHistory
             refreshTrigger={historyRefresh}
           />
+          <SharedSession refreshTrigger={historyRefresh} />
         </aside>
       </div>
     </div>

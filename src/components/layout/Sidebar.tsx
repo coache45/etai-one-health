@@ -20,6 +20,7 @@ import {
   Sparkles,
   Target,
   Package,
+  Heart,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUserStore } from '@/stores/user-store'
@@ -39,6 +40,7 @@ const navItems = [
   { href: '/studio', label: 'AI Studio', icon: Sparkles },
   { href: '/goals', label: 'Goals', icon: Target },
   { href: '/packs', label: 'Prompt Packs', icon: Package },
+  { href: '/partner', label: 'Partner', icon: Heart },
 ]
 
 const bottomItems = [

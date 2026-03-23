@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Target, Loader2, Plus, Trophy, X } from 'lucide-react'
+import { Target, Loader2, Plus, Trophy, X, Users } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { GoalCard } from '@/components/studio/goal-card'
 import { CategorySelector } from '@/components/studio/category-selector'
@@ -10,6 +10,8 @@ import type { UserGoal, GoalCategory } from '@/types/studio'
 
 export default function GoalsPage() {
   const [goals, setGoals] = useState<UserGoal[]>([])
+  const [partnerGoals, setPartnerGoals] = useState<UserGoal[]>([])
+  const [partnerName, setPartnerName] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [tab, setTab] = useState<'active' | 'completed'>('active')
@@ -27,6 +29,25 @@ export default function GoalsPage() {
       if (res.ok) {
         const data = await res.json()
         setGoals(data.goals ?? [])
+      }
+
+      // Load partner goals
+      const partnerRes = await fetch('/api/partnerships')
+      if (partnerRes.ok) {
+        const pData = await partnerRes.json()
+        if (pData.partnership?.status === 'active' && pData.partnership?.partner) {
+          setPartnerName(
+            pData.partnership.partner.display_name ||
+            pData.partnership.partner.full_name ||
+            'Your partner'
+          )
+          // Partner goals come from shared_with column
+          const sharedRes = await fetch(`/api/studio/goals?status=${tab}&include_shared=true`)
+          if (sharedRes.ok) {
+            const sData = await sharedRes.json()
+            setPartnerGoals(sData.shared_goals ?? [])
+          }
+        }
       }
     } catch {
       // ignore
@@ -217,6 +238,23 @@ export default function GoalsPage() {
             {displayGoals.map((goal) => (
               <GoalCard key={goal.id} goal={goal} onUpdate={loadGoals} />
             ))}
+          </div>
+        )}
+
+        {/* Partner goals */}
+        {partnerGoals.length > 0 && tab === 'active' && (
+          <div className="mt-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="w-5 h-5 text-[#C9A84C]" />
+              <h2 className="text-lg font-bold text-[#1B2A4A]">
+                {partnerName}&apos;s Goals
+              </h2>
+            </div>
+            <div className="space-y-4">
+              {partnerGoals.map((goal) => (
+                <GoalCard key={goal.id} goal={goal} onUpdate={loadGoals} />
+              ))}
+            </div>
           </div>
         )}
 

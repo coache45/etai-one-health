@@ -5,6 +5,7 @@ import {
   insertOutput,
 } from '@/lib/studio/queries'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { fetchActivePartnership, getPartnerId, saveSharedOutput } from '@/lib/partnerships/queries'
 import { FREE_TIER_WEEKLY_LIMIT } from '@/types/studio'
 
 /** POST /api/generate — Claude-powered generation with tier limits */
@@ -105,6 +106,25 @@ export async function POST(request: NextRequest) {
       prompt_text: promptText,
       output_text: outputText,
     })
+
+    // Dual-write: if user has an active partner, save a shared copy
+    try {
+      const partnership = await fetchActivePartnership(user.id)
+      if (partnership && partnership.status === 'active') {
+        const partnerId = getPartnerId(partnership, user.id)
+        if (partnerId) {
+          await saveSharedOutput({
+            user_id: user.id,
+            shared_with: partnerId,
+            pack_id: packId,
+            prompt_text: promptText,
+            output_text: outputText,
+          })
+        }
+      }
+    } catch {
+      // Shared save is best-effort — don't fail the main request
+    }
 
     return NextResponse.json({
       output: saved,
