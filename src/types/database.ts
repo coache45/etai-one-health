@@ -9,7 +9,7 @@ export interface Profile {
   height_cm: number | null
   weight_kg: number | null
   timezone: string
-  subscription_tier: 'free' | 'pro' | 'couples' | 'enterprise'
+  subscription_tier: 'free' | 'pro' | 'couples' | 'enterprise' | 'builder'
   stripe_customer_id: string | null
   onboarding_completed: boolean
   created_at: string
@@ -24,7 +24,7 @@ export interface Program {
   duration_days: number
   category: 'sleep' | 'stress' | 'energy' | 'recovery' | 'habit' | 'shift_work' | 'couples'
   is_couples: boolean
-  tier_required: 'free' | 'pro' | 'couples' | 'enterprise'
+  tier_required: 'free' | 'pro' | 'couples' | 'enterprise' | 'builder'
   daily_actions: DailyAction[]
   created_at: string
 }
