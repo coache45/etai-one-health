@@ -99,7 +99,7 @@ export default async function GuideViewerPage({ params }: PageProps) {
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            All Guides
+            Academy
           </Link>
           <Link href="/dashboard" className="text-xs font-medium text-[#C9A84C] hover:underline">
             ET AI ONE Health
@@ -152,13 +152,13 @@ export default async function GuideViewerPage({ params }: PageProps) {
         {/* Footer CTA */}
         <div className="mt-12 rounded-2xl bg-[#1B2A4A] p-8 text-center text-white">
           <p className="text-sm font-medium text-white/50">Ready to take action?</p>
-          <h3 className="mt-1 text-xl font-bold">Start your health journey today</h3>
+          <h3 className="mt-1 text-xl font-bold">Start your learning journey today</h3>
           <div className="mt-4 flex justify-center gap-3">
             <Link
               href="/guides"
               className="rounded-xl bg-white/10 px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-white/20"
             >
-              More Guides
+              More Lessons
             </Link>
             <Link
               href="/signup"
