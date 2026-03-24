@@ -8,12 +8,13 @@ export function useSubscription() {
 
   return {
     tier,
-    isPro: tier === 'pro' || tier === 'couples' || tier === 'enterprise',
+    isPro: tier !== 'free',
     isCouples: tier === 'couples' || tier === 'enterprise',
     isEnterprise: tier === 'enterprise',
     isFree: tier === 'free',
-    canAccessFeature: (requiredTier: 'free' | 'pro' | 'couples' | 'enterprise') => {
-      const tiers = ['free', 'pro', 'couples', 'enterprise']
+    isBuilder: tier === 'builder',
+    canAccessFeature: (requiredTier: 'free' | 'pro' | 'couples' | 'enterprise' | 'builder') => {
+      const tiers = ['free', 'builder', 'pro', 'couples', 'enterprise']
       return tiers.indexOf(tier) >= tiers.indexOf(requiredTier)
     },
   }
