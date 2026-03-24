@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Target, Sparkles, BookOpen } from 'lucide-react'
+import { Target, Sparkles, GraduationCap } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 
 const tiles = [
@@ -21,9 +21,9 @@ const tiles = [
   },
   {
     href: '/guides',
-    icon: BookOpen,
-    label: 'Explore guides',
-    description: 'Plain-language health and wellness',
+    icon: GraduationCap,
+    label: 'ET AI Academy',
+    description: 'Learn at your pace',
     color: 'bg-blue-50 text-blue-600 border-blue-200',
     iconBg: 'bg-blue-100',
   },
