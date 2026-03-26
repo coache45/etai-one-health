@@ -7,7 +7,7 @@ import {
   Zap,
   BookOpen,
   Brain,
-  Spotify,
+  Music,
   Apple,
   Youtube,
 } from 'lucide-react';
@@ -167,7 +167,7 @@ export default function PodcastPage() {
                 className="bg-white hover:bg-gray-100 rounded-lg p-3 transition-colors"
                 aria-label="Spotify"
               >
-                <Spotify className="w-6 h-6 text-[#1DB954]" />
+                <Music className="w-6 h-6 text-[#1DB954]" />
               </a>
               <a
                 href="#apple"
