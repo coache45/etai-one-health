@@ -1,189 +1,124 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { useUserStore } from '@/stores/user-store';
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
-  Home,
+  LayoutDashboard,
   Moon,
   Activity,
   Brain,
   MessageCircle,
   Users,
-  Heart,
+  BookOpen,
+  BarChart3,
+  User,
+  Settings,
   Zap,
-  Sparkles,
+  Shield,
   GraduationCap,
   Globe,
-  ExternalLink,
-  Settings,
-  LogOut,
-} from 'lucide-react';
+  Sparkles,
+  Target,
+  Package,
+  Heart,
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useUserStore } from '@/stores/user-store'
 
-interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ReactNode;
-  external?: boolean;
-  divider?: boolean;
-}
+const navItems = [
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/sleep', label: 'Sleep', icon: Moon },
+  { href: '/activity', label: 'Activity', icon: Activity },
+  { href: '/stress', label: 'Stress', icon: Brain },
+  { href: '/coach', label: 'AI Coach', icon: MessageCircle },
+  { href: '/couples', label: 'Couples', icon: Users },
+  { href: '/programs', label: 'Programs', icon: BookOpen },
+  { href: '/insights', label: 'Insights', icon: BarChart3 },
+  { href: '/guardian', label: 'Guardian', icon: Shield },
+  { href: '/guide-admin', label: 'Academy', icon: GraduationCap },
+  { href: '/community', label: 'Earth Station', icon: Globe },
+  { href: '/studio', label: 'AI Studio', icon: Sparkles },
+  { href: '/goals', label: 'Goals', icon: Target },
+  { href: '/packs', label: 'Prompt Packs', icon: Package },
+  { href: '/partner', label: 'Partner', icon: Heart },
+]
 
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
+const bottomItems = [
+  { href: '/profile', label: 'Profile', icon: User },
+  { href: '/settings', label: 'Settings', icon: Settings },
+]
 
 export function Sidebar() {
-  const pathname = usePathname();
-  const { user, logout } = useUserStore();
-
-  const navSections: NavSection[] = [
-    {
-      title: 'HEALTH',
-      items: [
-        { label: 'Dashboard', href: '/dashboard', icon: <Home className="w-5 h-5" /> },
-        { label: 'Sleep', href: '/sleep', icon: <Moon className="w-5 h-5" /> },
-        { label: 'Activity', href: '/activity', icon: <Activity className="w-5 h-5" /> },
-        { label: 'Stress', href: '/stress', icon: <Brain className="w-5 h-5" /> },
-        { label: 'AI Coach', href: '/coach', icon: <MessageCircle className="w-5 h-5" /> },
-        { label: 'Couples', href: '/couples', icon: <Users className="w-5 h-5" /> },
-        { label: 'Programs', href: '/programs', icon: <Heart className="w-5 h-5" /> },
-        { label: 'Insights', href: '/insights', icon: <Sparkles className="w-5 h-5" /> },
-        { label: 'Guardian', href: '/guardian', icon: <Zap className="w-5 h-5" /> },
-      ],
-    },
-    {
-      title: 'TOOLS',
-      items: [
-        { label: 'AI Studio', href: '/ai-studio', icon: <Sparkles className="w-5 h-5" /> },
-        { label: 'Prompt Packs', href: '/prompts', icon: <Zap className="w-5 h-5" /> },
-        { label: 'Goals', href: '/goals', icon: <Activity className="w-5 h-5" /> },
-      ],
-    },
-    {
-      title: 'LEARN & CONNECT',
-      items: [
-        {
-          label: 'Academy',
-          href: '/academy',
-          icon: <GraduationCap className="w-5 h-5" />,
-        },
-        {
-          label: 'Earth Station',
-          href: 'https://www.skool.com/earth-station-by-et-ai-5562',
-          icon: <Globe className="w-5 h-5" />,
-          external: true,
-        },
-        {
-          label: 'Language Academy',
-          href: 'https://et-ai-language-academy.vercel.app',
-          icon: <Globe className="w-5 h-5" />,
-          external: true,
-        },
-      ],
-    },
-  ];
-
-  const isActive = (href: string) => {
-    return pathname === href || pathname.startsWith(href + '/');
-  };
+  const pathname = usePathname()
+  const { profile } = useUserStore()
 
   return (
-    <div className="h-screen w-64 bg-[#1B2A4A] text-white flex flex-col overflow-y-auto">
-      {/* Logo Section */}
-      <div className="p-6 border-b border-gray-700">
-        <Link href="/" className="block">
-          <h1 className="text-xl font-bold text-white mb-1">ET AI</h1>
-          <p className="text-xs text-gray-400">Bringing AI Down to Earth</p>
+    <aside className="hidden lg:flex flex-col w-64 min-h-screen bg-[#1B2A4A] text-white">
+      {/* Logo */}
+      <div className="p-6 border-b border-white/10">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-[#F5C842] rounded-lg flex items-center justify-center">
+            <Zap className="w-5 h-5 text-[#1B2A4A]" />
+          </div>
+          <div>
+            <p className="font-bold text-sm leading-none">ET AI ONE</p>
+            <p className="text-xs text-white/50 mt-0.5">Health Platform</p>
+          </div>
         </Link>
       </div>
 
-      {/* Nav Sections */}
-      <nav className="flex-1 px-4 py-6 overflow-y-auto">
-        <div className="space-y-8">
-          {navSections.map((section, sectionIdx) => (
-            <div key={sectionIdx}>
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2">
-                {section.title}
-              </h3>
-              <ul className="space-y-1">
-                {section.items.map((item, itemIdx) => {
-                  const active = isActive(item.href);
-                  const isExternal = item.external;
-
-                  if (isExternal) {
-                    return (
-                      <li key={itemIdx}>
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={cn(
-                            'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium',
-                            'text-gray-300 hover:text-white hover:bg-gray-700'
-                          )}
-                        >
-                          {item.icon}
-                          <span className="flex-1">{item.label}</span>
-                          <ExternalLink className="w-4 h-4 ml-1 text-gray-500" />
-                        </a>
-                      </li>
-                    );
-                  }
-
-                  return (
-                    <li key={itemIdx}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium',
-                          active
-                            ? 'bg-[#F5C842] text-[#1B2A4A]'
-                            : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                        )}
-                      >
-                        {item.icon}
-                        <span>{item.label}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        {navItems.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href || pathname.startsWith(href + '/')
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                active
+                  ? 'bg-white/15 text-white'
+                  : 'text-white/60 hover:bg-white/10 hover:text-white'
+              )}
+            >
+              <Icon className="w-5 h-5 shrink-0" />
+              {label}
+              {(label === 'Guardian' || label === 'Earth Station' || label === 'AI Studio') && (
+                <span className="ml-auto text-xs bg-[#F5C842] text-[#1B2A4A] px-1.5 py-0.5 rounded-full font-bold">
+                  NEW
+                </span>
+              )}
+            </Link>
+          )
+        })}
       </nav>
 
-      {/* Bottom Section - User & Settings */}
-      <div className="border-t border-gray-700 p-4 space-y-2">
-        <Link
-          href="/settings"
-          className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium',
-            isActive('/settings')
-              ? 'bg-[#F5C842] text-[#1B2A4A]'
-              : 'text-gray-300 hover:text-white hover:bg-gray-700'
-          )}
-        >
-          <Settings className="w-5 h-5" />
-          <span>Settings</span>
-        </Link>
+      {/* Bottom */}
+      <div className="p-4 border-t border-white/10 space-y-1">
+        {bottomItems.map(({ href, label, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              pathname === href
+                ? 'bg-white/15 text-white'
+                : 'text-white/60 hover:bg-white/10 hover:text-white'
+            )}
+          >
+            <Icon className="w-5 h-5 shrink-0" />
+            {label}
+          </Link>
+        ))}
 
-        <button
-          onClick={logout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>Log Out</span>
-        </button>
-
-        {user && (
-          <div className="mt-4 pt-4 border-t border-gray-700 text-xs text-gray-400 px-2">
-            <p className="truncate">{user.email}</p>
+        {profile && (
+          <div className="pt-3 mt-2 border-t border-white/10">
+            <p className="text-xs text-white/40 px-3 truncate">{profile.full_name}</p>
+            <p className="text-xs text-[#F5C842] px-3 capitalize">{profile.subscription_tier}</p>
           </div>
         )}
       </div>
-    </div>
-  );
+    </aside>
+  )
 }
