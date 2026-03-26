@@ -6,12 +6,12 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ET AI ONE Health',
-  description: 'Your AI-powered health and wellness platform. Bringing AI Down to Earth.',
+  title: 'ET AI - Bringing AI Down to Earth',
+  description: 'AI for real people. Health tools, education, community, and wearables from ET AI.',
   keywords: ['health', 'wellness', 'AI coach', 'couples health', 'sleep tracking'],
   authors: [{ name: 'ET AI, LLC' }],
   openGraph: {
-    title: 'ET AI ONE Health',
+    title: 'ET AI - Bringing AI Down to Earth',
     description: 'Bringing AI Down to Earth.',
     type: 'website',
   },
@@ -40,3 +40,7 @@ export default function RootLayout({
     </html>
   )
 }
+
+
+
+
