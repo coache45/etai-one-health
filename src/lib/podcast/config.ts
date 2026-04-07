@@ -27,9 +27,9 @@ export const PODCAST_CONFIG = {
 
   // MailerLite embedded form
   // Get from: MailerLite → Forms → Embedded forms → "The O-Spot Listeners" → Action URL
-  mailerLiteFormAction: "", // TODO
-  mailerLiteAccountId: "",  // TODO
-  mailerLiteFormId: "",     // TODO
+  mailerLiteFormAction: "", // not needed for JS Universal embed
+  mailerLiteAccountId: "2186485",
+  mailerLiteFormId: "pk05YK",
 
   // Release cadence
   releaseDay: "Tuesday",
