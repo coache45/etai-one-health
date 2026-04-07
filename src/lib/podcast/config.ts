@@ -7,14 +7,14 @@
 export const PODCAST_CONFIG = {
   // Identity
   showName: "The O-Spot",
-  tagline: "AI, life, and love — brought down to earth.",
+  tagline: "AI, entrepreneurship, life, and love — brought down to earth.",
   hosts: "Ernest & Tanja Owens",
   location: "Charlotte, NC",
   contactEmail: "the.o.spot@etaiworld.ai",
 
   // Listen / watch URLs
   spotifyShowUrl: "https://open.spotify.com/show/2P0DVti3N9zzZve7uVPvCc",
-  youtubeChannelUrl: "", // TODO: fill after brand channel + @TheOSpot handle claim
+  youtubeChannelUrl: "https://www.youtube.com/@theospotpodcast",
   applePodcastsUrl: "", // TODO: fill after Apple submission (post-Ep1)
 
   // RSS — Spotify gates this until Ep1 is published
@@ -23,7 +23,7 @@ export const PODCAST_CONFIG = {
   // Social
   instagramUrl: "https://instagram.com/the.o.spot",
   instagramHandle: "@the.o.spot",
-  youtubeHandle: "@TheOSpot",
+  youtubeHandle: "@theospotpodcast",
 
   // MailerLite embedded form
   // Get from: MailerLite → Forms → Embedded forms → "The O-Spot Listeners" → Action URL
