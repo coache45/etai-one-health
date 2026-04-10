@@ -6,13 +6,13 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ET AI ONE Health',
-  description: 'Your AI-powered health and wellness platform. Bringing AI Down to Earth.',
-  keywords: ['health', 'wellness', 'AI coach', 'couples health', 'sleep tracking'],
+  title: 'ET AI Academy — Bringing AI Down to Earth',
+  description: 'Free ELI5 guides, AI tools, and a community that speaks plain English. Learn anything. Understand everything.',
+  keywords: ['AI', 'learning', 'ELI5', 'health', 'wellness', 'language learning', 'ET AI', 'Academy'],
   authors: [{ name: 'ET AI, LLC' }],
   openGraph: {
-    title: 'ET AI ONE Health',
-    description: 'Bringing AI Down to Earth.',
+    title: 'ET AI Academy',
+    description: 'Bringing AI Down to Earth — one lesson at a time.',
     type: 'website',
   },
 }
